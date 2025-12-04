@@ -38,6 +38,6 @@ class Orders extends Model
     }
 
     public function pembayaran(){
-        return $this->hasMany(Pembayaran::class, 'id_order', 'id_order');
+        return $this->hasOne(Pembayaran::class, 'id_order', 'id_order');
     }
 }

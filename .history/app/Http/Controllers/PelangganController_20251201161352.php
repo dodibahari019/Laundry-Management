@@ -1,0 +1,102 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
+use Carbon\Carbon;
+use App\Models\Pelanggan;
+
+class PelangganController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        return view('pelanggan.main');
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        return view('pelanggan.create');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        try{
+            $validated = $request->validate([
+                'nama' => 'required|string|max:100',
+                'no_hp' => 'required|string|max:20',
+                'email' => 'required|email|max:100',
+                'alamat' => 'required|string|max:255',
+            ]);
+
+            // Cari ID terakhir
+            $lastIdTransaksiPelanggan = Pelanggan::orderBy('id_pelanggan', 'desc')->first();
+
+            if ($lastIdTransaksiPelanggan) {
+                $lastNumber = (int)substr($lastIdTransaksiPelanggan->id_pelanggan, 3); // Ambil angka dari 'SUP001'
+                $newNumber = $lastNumber + 1;
+            } else {
+                $newNumber = 1;
+            }
+
+            $newId = 'PLG' . str_pad($newNumber, 3, '0', STR_PAD_LEFT);
+
+            Pelanggan::create([
+                'id_pelanggan' => $newId,
+                'nama' => $validated['nama'],
+                'no_hp' => $validated['no_'],
+                'email' => $validated['harga'],
+                'alamat' => $validated['alamat'],
+            ]);
+
+            return redirect()->back();
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menyimpan data: ' . $e->getMessage(),
+            ]);
+        }
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        //
+    }
+}
